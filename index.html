@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Roof Arcade | NanoSeal NB</title>
+<meta name="description" content="Take on New Brunswick weather in a collection of fast, free, 20-second roof challenges from NanoSeal NB.">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://nanosealnb.ca/roof-arcade/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230A0A0A'/><circle cx='16' cy='16' r='6' fill='%23F58025'/></svg>">
+<meta property="og:title" content="Roof Arcade | NanoSeal NB">
+<meta property="og:description" content="Take on New Brunswick weather in a collection of fast, free, 20-second roof challenges.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nanosealnb.ca/roof-arcade/">
+<meta property="og:image" content="https://nanosealnb.ca/roof-arcade/share-image.png">
+<meta property="og:site_name" content="NanoSeal NB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Roof Arcade | NanoSeal NB">
+<meta name="twitter:description" content="Take on New Brunswick weather in a collection of fast, free, 20-second roof challenges.">
+<meta name="twitter:image" content="https://nanosealnb.ca/roof-arcade/share-image.png">
+<link rel="stylesheet" href="style.css">
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '417200467669469');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=417200467669469&ev=PageView&noscript=1"/></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-T69MEZVL30"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-T69MEZVL30');</script>
+</head>
+<body>
+<header class="arcade-header">
+  <p class="kicker">NanoSeal NB</p>
+  <h1>PUT YOUR ROOF KNOWLEDGE TO THE TEST</h1>
+  <p class="subtitle">Take on New Brunswick weather in a collection of fast, free, 20-second roof challenges.</p>
+</header>
+
+<main class="game-grid" id="game-grid" aria-label="Available roof games">
+  <!-- Game cards inserted by JS from game-card-data.js -->
+</main>
+
+<section class="cta-section">
+  <a class="btn btn-accent" href="https://nanosealnb.ca/contact/" aria-label="Request your free assessment" id="assessment-link">REQUEST YOUR FREE ASSESSMENT</a>
+</section>
+
+<nav class="see-also" aria-label="More from NanoSeal NB">
+  <p class="see-also-heading">SEE ALSO</p>
+  <ul class="see-also-links">
+    <li><a href="https://nanosealnb.ca/roof-preservation-journey/">Roof Preservation Journey</a></li>
+    <li><a href="https://nanosealnb.ca/home-owners/">Home Owners</a></li>
+    <li><a href="https://nanosealnb.ca/property-management/">Property Management</a></li>
+    <li><a href="https://nanosealnb.ca/blog/">Blog</a></li>
+  </ul>
+</nav>
+
+<script src="game-card-data.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function trackGameEvent(eventName, data) {
+    if (typeof console !== 'undefined' && console.log) console.log('[GameEvent]', eventName, data || {});
+    if (typeof window.fbq === 'function') window.fbq('trackCustom', eventName, data || {});
+    if (typeof window.gtag === 'function') window.gtag('event', eventName, data || {});
+  }
+
+  var grid = document.getElementById('game-grid');
+  if (!grid || typeof GAME_CARD_DATA === 'undefined') return;
+
+  GAME_CARD_DATA.forEach(function (game) {
+    var card = document.createElement('a');
+    card.className = 'game-card';
+    card.href = game.url;
+    card.setAttribute('aria-label', 'Play ' + game.name + ' now');
+
+    var art = document.createElement('div');
+    art.className = 'card-art';
+    art.innerHTML = game.svg;
+
+    var title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = game.name;
+
+    var desc = document.createElement('div');
+    desc.className = 'card-desc';
+    desc.textContent = game.description;
+
+    var season = document.createElement('div');
+    season.className = 'card-season';
+    season.textContent = game.season;
+
+    var play = document.createElement('div');
+    play.className = 'card-play';
+    play.textContent = 'PLAY NOW';
+
+    card.appendChild(art);
+    card.appendChild(season);
+    card.appendChild(title);
+    card.appendChild(desc);
+    card.appendChild(play);
+    grid.appendChild(card);
+
+    card.addEventListener('click', function () {
+      trackGameEvent('arcade_game_selected', { gameName: game.name, destination: game.url });
+    });
+  });
+
+  var assessmentLink = document.getElementById('assessment-link');
+  if (assessmentLink) {
+    assessmentLink.addEventListener('click', function () {
+      trackGameEvent('assessment_clicked', { url: 'https://nanosealnb.ca/contact/' });
+    });
+  }
+
+  trackGameEvent('arcade_viewed', { page: 'roof-arcade' });
+})();
+</script>
+</body>
+</html>
