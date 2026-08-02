@@ -103,6 +103,8 @@
   const endScreen = document.getElementById('end-screen');
   const tryAgainBtn = document.getElementById('try-again-btn');
   const assessmentLink = document.getElementById('assessment-link');
+  const shareBtn = document.getElementById('share-btn');
+  const shareStatusEl = document.getElementById('share-status');
   const hudEl = document.getElementById('hud');
   const scoreEl = document.getElementById('score');
   const timerEl = document.getElementById('timer');
@@ -982,8 +984,351 @@
 
   function restartGame() {
     trackGameEvent('game_restarted', {});
+    // Clear share status
+    shareStatusEl.textContent = '';
     endScreen.setAttribute('aria-hidden', 'true');
     startGame();
+  }
+
+  /* ============================================================
+     Score Card Generator - Creates a 1200x630 PNG via offscreen canvas
+     ============================================================ */
+  function createScoreCard(scoreVal, roofHealthVal) {
+    const W = 1200;
+    const H = 630;
+    const off = document.createElement('canvas');
+    off.width = W;
+    off.height = H;
+    const c = off.getContext('2d');
+
+    // Black background
+    c.fillStyle = '#0A0A0A';
+    c.fillRect(0, 0, W, H);
+
+    // Orange accent border
+    c.strokeStyle = '#F58025';
+    c.lineWidth = 6;
+    c.strokeRect(12, 12, W - 24, H - 24);
+
+    // Inner subtle border line
+    c.strokeStyle = 'rgba(245, 128, 37, 0.25)';
+    c.lineWidth = 1;
+    c.strokeRect(22, 22, W - 44, H - 44);
+
+    // Small heading: NANOSEAL NB
+    c.fillStyle = '#F58025';
+    c.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
+    c.textAlign = 'center';
+    c.fillText('NANOSEAL NB', W / 2, 75);
+
+    // Main heading: I SURVIVED THE FALL STORM
+    c.fillStyle = '#FFFFFF';
+    c.font = '800 52px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
+    c.fillText('I SURVIVED THE FALL STORM', W / 2, 150);
+
+    // Score section - two columns
+    // Score
+    c.fillStyle = '#F58025';
+    c.font = '700 18px -apple-system, sans-serif';
+    c.textAlign = 'right';
+    c.fillText('SCORE', W / 2 - 30, 240);
+
+    c.fillStyle = '#FFFFFF';
+    c.font = '800 64px -apple-system, sans-serif';
+    c.textAlign = 'right';
+    c.fillText(String(scoreVal), W / 2 - 30, 300);
+
+    // Roof Health
+    c.fillStyle = '#F58025';
+    c.font = '700 18px -apple-system, sans-serif';
+    c.textAlign = 'left';
+    c.fillText('ROOF HEALTH', W / 2 + 30, 240);
+
+    c.fillStyle = '#FFFFFF';
+    c.font = '800 64px -apple-system, sans-serif';
+    c.fillText(roofHealthVal + '%', W / 2 + 30, 300);
+
+    // Divider line
+    c.strokeStyle = '#2A2A2A';
+    c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(W / 2 - 15, 205);
+    c.lineTo(W / 2 - 15, 310);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(W / 2 + 15, 205);
+    c.lineTo(W / 2 + 15, 310);
+    c.stroke();
+
+    // Supporting line
+    c.fillStyle = '#B0B0B0';
+    c.font = '400 26px -apple-system, sans-serif';
+    c.textAlign = 'center';
+    c.fillText('Can your roof survive New Brunswick weather?', W / 2, 380);
+
+    // Website URL - prominent
+    c.fillStyle = '#F58025';
+    c.font = '700 30px -apple-system, sans-serif';
+    c.fillText('nanosealnb.ca/fall-challenge/', W / 2, 445);
+
+    // Footer
+    c.fillStyle = '#707070';
+    c.font = '400 20px -apple-system, sans-serif';
+    c.fillText('Play the 20-second Roof Survival Challenge', W / 2, 510);
+
+    // Decorative hazard icons in corners (simple vector shapes)
+    // Top-left leaf
+    drawCardLeaf(c, 60, 55, 20, '#F58025');
+    // Top-right leaf
+    drawCardLeaf(c, W - 60, 55, 20, '#D4651C');
+    // Bottom-left rain drop
+    drawCardRain(c, 55, H - 55, 16, '#6EC6E6');
+    // Bottom-right rain drop
+    drawCardRain(c, W - 55, H - 55, 16, '#6EC6E6');
+
+    return off;
+  }
+
+  // Helper: draw a small leaf on the score card
+  function drawCardLeaf(c, x, y, size, color) {
+    c.save();
+    c.translate(x, y);
+    c.fillStyle = color;
+    c.beginPath();
+    c.ellipse(0, 0, size * 0.5, size, 0, 0, Math.PI * 2);
+    c.fill();
+    c.strokeStyle = 'rgba(0,0,0,0.25)';
+    c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(0, -size);
+    c.lineTo(0, size);
+    c.stroke();
+    c.restore();
+  }
+
+  // Helper: draw a small raindrop on the score card
+  function drawCardRain(c, x, y, size, color) {
+    c.save();
+    c.translate(x, y);
+    c.fillStyle = color;
+    c.beginPath();
+    c.moveTo(0, -size);
+    c.bezierCurveTo(size * 0.6, -size * 0.3, size * 0.6, size * 0.5, 0, size);
+    c.bezierCurveTo(-size * 0.6, size * 0.5, -size * 0.6, -size * 0.3, 0, -size);
+    c.fill();
+    c.restore();
+  }
+
+  /* ============================================================
+     Score Sharing Logic
+     ============================================================ */
+  var shareInProgress = false;
+
+  function shareScore(scoreVal, roofHealthVal) {
+    // Prevent duplicate rapid clicks
+    if (shareInProgress) return;
+    shareInProgress = true;
+
+    // Disable button, change label
+    var originalLabel = shareBtn.textContent;
+    shareBtn.disabled = true;
+    shareBtn.textContent = 'PREPARING SCORE...';
+    shareStatusEl.textContent = '';
+
+    var sharingMethod = 'clipboard-download';
+
+    // Generate the score card canvas
+    var cardCanvas = createScoreCard(scoreVal, roofHealthVal);
+
+    // Convert to blob
+    cardCanvas.toBlob(function (blob) {
+      if (!blob) {
+        // toBlob failed - try toDataURL fallback for download
+        shareInProgress = false;
+        shareBtn.disabled = false;
+        shareBtn.textContent = originalLabel;
+        shareStatusEl.textContent = 'Could not generate score card. Please try again.';
+        return;
+      }
+
+      var shareText = 'I scored ' + scoreVal + ' points with ' + roofHealthVal +
+        '% roof health remaining in NanoSeal NB\u2019s Fall Roof Challenge. Can you beat my score?\n\n' +
+        'https://nanosealnb.ca/fall-challenge/';
+
+      var shareTitle = 'Can Your Roof Survive Fall?';
+      var shareUrl = 'https://nanosealnb.ca/fall-challenge/';
+
+      // Check for Web Share API with file support
+      var canShareFiles = false;
+      try {
+        if (typeof navigator !== 'undefined' && typeof navigator.canShare === 'function') {
+          var testFile = new File([blob], 'nanoseal-roof-challenge-score.png', {
+            type: 'image/png'
+          });
+          canShareFiles = navigator.canShare({ files: [testFile] });
+        }
+      } catch (e) {
+        canShareFiles = false;
+      }
+
+      if (canShareFiles) {
+        // Native share with image file
+        sharingMethod = 'native-file';
+        var shareFile = new File([blob], 'nanoseal-roof-challenge-score.png', {
+          type: 'image/png'
+        });
+
+        trackGameEvent('share_clicked', {
+          score: scoreVal,
+          roofHealth: roofHealthVal,
+          sharingMethod: sharingMethod
+        });
+
+        if (navigator.share) {
+          navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl,
+            files: [shareFile]
+          }).then(function () {
+            // Shared successfully
+            trackGameEvent('share_completed', {
+              score: scoreVal,
+              roofHealth: roofHealthVal,
+              sharingMethod: sharingMethod,
+              result: 'shared'
+            });
+            shareInProgress = false;
+            shareBtn.disabled = false;
+            shareBtn.textContent = originalLabel;
+          }).catch(function (err) {
+            // User cancelled or error
+            if (err && err.name === 'AbortError') {
+              // User cancelled - no error message
+              shareStatusEl.textContent = '';
+            } else {
+              shareStatusEl.textContent = 'Sharing was interrupted. Please try again.';
+            }
+            shareInProgress = false;
+            shareBtn.disabled = false;
+            shareBtn.textContent = originalLabel;
+          });
+          return;
+        }
+      }
+
+      // Check for Web Share API without file support (text + URL only)
+      if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+        sharingMethod = 'native-text';
+
+        trackGameEvent('share_clicked', {
+          score: scoreVal,
+          roofHealth: roofHealthVal,
+          sharingMethod: sharingMethod
+        });
+
+        navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl
+        }).then(function () {
+          trackGameEvent('share_completed', {
+            score: scoreVal,
+            roofHealth: roofHealthVal,
+            sharingMethod: sharingMethod,
+            result: 'shared'
+          });
+          // Also download the image since native share didn't include it
+          downloadScoreCard(blob);
+          shareInProgress = false;
+          shareBtn.disabled = false;
+          shareBtn.textContent = originalLabel;
+        }).catch(function (err) {
+          if (err && err.name === 'AbortError') {
+            // User cancelled - no error
+            shareStatusEl.textContent = '';
+          } else {
+            // Fallback to clipboard + download
+            fallbackClipboardDownload(blob, shareText, scoreVal, roofHealthVal, originalLabel);
+          }
+          shareInProgress = false;
+          shareBtn.disabled = false;
+          shareBtn.textContent = originalLabel;
+        });
+        return;
+      }
+
+      // No Web Share API at all - clipboard + download fallback
+      fallbackClipboardDownload(blob, shareText, scoreVal, roofHealthVal, originalLabel);
+
+    }, 'image/png');
+  }
+
+  function downloadScoreCard(blob) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'nanoseal-roof-challenge-score.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    // Revoke after a delay to ensure download starts
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function fallbackClipboardDownload(blob, shareText, scoreVal, roofHealthVal, originalLabel) {
+    var sharingMethod = 'clipboard-download';
+
+    trackGameEvent('share_clicked', {
+      score: scoreVal,
+      roofHealth: roofHealthVal,
+      sharingMethod: sharingMethod
+    });
+
+    // Try clipboard
+    var clipboardOK = false;
+    if (typeof navigator !== 'undefined' && navigator.clipboard &&
+        typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(shareText).then(function () {
+        clipboardOK = true;
+        // Download the image
+        downloadScoreCard(blob);
+        shareStatusEl.textContent = 'Score copied \u2014 share your score card and challenge a friend!';
+        trackGameEvent('share_completed', {
+          score: scoreVal,
+          roofHealth: roofHealthVal,
+          sharingMethod: sharingMethod,
+          result: 'clipboard-download'
+        });
+      }).catch(function () {
+        // Clipboard failed - just download
+        downloadScoreCard(blob);
+        shareStatusEl.textContent = 'Your score card has been saved. Share it and challenge a friend!';
+        trackGameEvent('share_completed', {
+          score: scoreVal,
+          roofHealth: roofHealthVal,
+          sharingMethod: sharingMethod,
+          result: 'download-only'
+        });
+      }).finally(function () {
+        shareInProgress = false;
+        shareBtn.disabled = false;
+        shareBtn.textContent = originalLabel;
+      });
+    } else {
+      // No clipboard API - just download
+      downloadScoreCard(blob);
+      shareStatusEl.textContent = 'Your score card has been saved. Share it and challenge a friend!';
+      trackGameEvent('share_completed', {
+        score: scoreVal,
+        roofHealth: roofHealthVal,
+        sharingMethod: sharingMethod,
+        result: 'download-only'
+      });
+      shareInProgress = false;
+      shareBtn.disabled = false;
+      shareBtn.textContent = originalLabel;
+    }
   }
 
   /* ============================================================
@@ -995,6 +1340,17 @@
     trackGameEvent('assessment_clicked', {
       url: 'https://nanosealnb.ca/contact/'
     });
+  });
+  shareBtn.addEventListener('click', function () {
+    var s = parseInt(scoreEl.textContent, 10) || 0;
+    var h = parseInt(finalHealthEl.textContent, 10) || 0;
+    shareScore(s, h);
+  });
+  shareBtn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      shareBtn.click();
+    }
   });
 
   // Pause when tab is hidden

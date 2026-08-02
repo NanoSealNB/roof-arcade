@@ -113,6 +113,8 @@ The `trackGameEvent(eventName, data)` function in `game.js` currently logs to co
 - `game_failed` - roof health reaches zero
 - `game_restarted` - player clicks TRY AGAIN
 - `assessment_clicked` - player clicks the assessment button
+- `share_clicked` - player clicks SHARE MY SCORE (includes sharingMethod: "native-file", "native-text", or "clipboard-download")
+- `share_completed` - share action completes successfully
 
 ### Meta Pixel
 

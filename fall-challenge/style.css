@@ -305,6 +305,35 @@ html, body {
   box-shadow: 0 4px 12px rgba(245, 128, 37, 0.3);
 }
 
+.btn-share {
+  background: transparent;
+  color: var(--nano-white);
+  border: 2px solid var(--nano-orange);
+}
+
+.btn-share:hover {
+  background: rgba(245, 128, 37, 0.15);
+  color: var(--nano-orange);
+  box-shadow: 0 0 10px rgba(245, 128, 37, 0.3);
+}
+
+.btn-share:disabled {
+  opacity: 0.5;
+  cursor: wait;
+  border-color: var(--nano-text-dim);
+  color: var(--nano-text-dim);
+}
+
+/* ---- Share Status Message ---- */
+.share-status {
+  font-size: 0.9rem;
+  color: var(--nano-orange);
+  text-align: center;
+  margin-top: 0.5rem;
+  min-height: 1.2em;
+  transition: opacity 0.3s ease;
+}
+
 .btn-accent {
   background: var(--nano-orange);
   color: var(--nano-white);
