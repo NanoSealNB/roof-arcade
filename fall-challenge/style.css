@@ -293,6 +293,18 @@ html, body {
     inset 0 0 12px rgba(255, 200, 150, 0.3);
 }
 
+.btn-outline {
+  background: var(--nano-white);
+  color: var(--nano-black);
+  border: 2px solid var(--nano-orange);
+}
+
+.btn-outline:hover {
+  background: var(--nano-orange);
+  color: var(--nano-white);
+  box-shadow: 0 4px 12px rgba(245, 128, 37, 0.3);
+}
+
 .btn-accent {
   background: var(--nano-orange);
   color: var(--nano-white);

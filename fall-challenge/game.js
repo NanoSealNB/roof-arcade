@@ -42,10 +42,10 @@
     warningSpawnMultiplier: 0.55, // multiply interval after weather warning
 
     // --- Hazard fall speed (pixels per second) ---
-    baseFallSpeed: 90,
-    maxFallSpeed: 260,
-    speedRampPerSec: 5,           // speed increase per second
-    warningSpeedBoost: 80,        // added to fall speed after warning
+    baseFallSpeed: 140,
+    maxFallSpeed: 420,
+    speedRampPerSec: 8,           // speed increase per second
+    warningSpeedBoost: 120,       // added to fall speed after warning
 
     // --- Hazard mix (relative weights) ---
     hazardWeights: {
