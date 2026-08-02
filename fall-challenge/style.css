@@ -168,6 +168,7 @@ html, body {
   background: rgba(10, 10, 10, 0.92);
   padding: 1.5rem;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .overlay[aria-hidden="true"] {
@@ -471,6 +472,63 @@ html, body {
   }
   .overlay h1 {
     font-size: 1.3rem;
+  }
+}
+
+/* ---- Short screens (iPhone SE, small phones) ---- */
+@media (max-height: 700px) {
+  .overlay {
+    align-items: flex-start;
+    padding: 1rem 1rem 2rem;
+  }
+  .overlay h1 {
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    margin-bottom: 0.5rem;
+  }
+  .end-title {
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem) !important;
+  }
+  .kicker {
+    margin-bottom: 0.4rem;
+  }
+  .result-stats {
+    gap: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .result-stat {
+    font-size: 0.95rem;
+  }
+  .tagline {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .instructions {
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  .btn {
+    min-height: 48px;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+  }
+  .btn-row {
+    gap: 0.5rem;
+  }
+  .small-info {
+    font-size: 0.8rem;
+  }
+  .see-also {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+  }
+  .see-also-heading {
+    margin-bottom: 0.5rem;
+  }
+  .see-also-links a {
+    font-size: 0.85rem;
+  }
+  .share-status {
+    font-size: 0.85rem;
   }
 }
 
