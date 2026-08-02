@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Can Your Roof Survive Fall? | NanoSeal NB</title>
+<meta name="description" content="Test your roof against leaves, rain, moss and fall weather in NanoSeal NB's 20-second Roof Survival Challenge.">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://nanosealnb.ca/fall-challenge/">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Can Your Roof Survive Fall? | NanoSeal NB">
+<meta property="og:description" content="Test your roof against leaves, rain, moss and fall weather in NanoSeal NB's 20-second Roof Survival Challenge.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nanosealnb.ca/fall-challenge/">
+<meta property="og:image" content="https://nanosealnb.ca/fall-challenge/share-image.png">
+<meta property="og:site_name" content="NanoSeal NB">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Can Your Roof Survive Fall? | NanoSeal NB">
+<meta name="twitter:description" content="Test your roof against leaves, rain, moss and fall weather in NanoSeal NB's 20-second Roof Survival Challenge.">
+<meta name="twitter:image" content="https://nanosealnb.ca/fall-challenge/share-image.png">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Canvas fallback notice; hidden if JS+Canvas are available -->
+<div id="canvas-fallback" class="fallback" role="alert">
+  Your browser does not support the HTML5 Canvas element required to play this game.
+  Please update your browser to the latest version to play "Can Your Roof Survive Fall?"
+</div>
+
+<!-- Start screen overlay -->
+<div id="start-screen" class="overlay" role="dialog" aria-labelledby="start-heading">
+  <div class="overlay-inner">
+    <p class="kicker">NanoSeal NB</p>
+    <h1 id="start-heading">CAN YOUR ROOF SURVIVE FALL?</h1>
+    <p class="instructions">
+      Leaves, rain, moss and branches are falling. Tap each hazard before it hits your roof.
+      Keep your roof healthy for 20 seconds.
+    </p>
+    <button id="start-btn" class="btn btn-primary" aria-label="Start the roof survival game">
+      START
+    </button>
+  </div>
+</div>
+
+<!-- Game HUD -->
+<div id="hud" class="hud" aria-hidden="true">
+  <div class="hud-left">
+    <div class="hud-label">ROOF HEALTH</div>
+    <div class="health-bar" role="progressbar" aria-label="Roof health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+      <div id="health-fill" class="health-fill"></div>
+    </div>
+  </div>
+  <div class="hud-right">
+    <div class="hud-cell">
+      <div class="hud-label">SCORE</div>
+      <div id="score" class="hud-value">0</div>
+    </div>
+    <div class="hud-cell">
+      <div class="hud-label">TIME</div>
+      <div id="timer" class="hud-value">20</div>
+    </div>
+  </div>
+</div>
+
+<!-- Weather warning banner (shown around 15s remaining) -->
+<div id="weather-warning" class="weather-warning" aria-hidden="true">WEATHER WARNING</div>
+
+<!-- Canvas element -->
+<canvas id="game-canvas" aria-label="Roof survival game canvas" aria-hidden="true"></canvas>
+
+<!-- End screen overlay -->
+<div id="end-screen" class="overlay" role="dialog" aria-labelledby="end-heading" aria-hidden="true">
+  <div class="overlay-inner">
+    <p class="kicker">NanoSeal NB</p>
+    <h1 id="end-heading" class="end-title">YOU SURVIVED THE STORM</h1>
+    <div class="result-stats">
+      <div class="result-stat">Score: <span id="final-score">0</span></div>
+      <div class="result-stat">Roof Health: <span id="final-health">0</span>%</div>
+    </div>
+    <p class="tagline">You cannot control New Brunswick weather, but you can prepare your roof for it.</p>
+    <div class="btn-row">
+      <button id="try-again-btn" class="btn btn-primary" aria-label="Try again">
+        TRY AGAIN
+      </button>
+      <a id="assessment-link" class="btn btn-accent" href="https://nanosealnb.ca/contact/"
+         aria-label="Request your free assessment">
+        REQUEST YOUR FREE ASSESSMENT
+      </a>
+    </div>
+    <p class="small-info">Real roof problems are easier to manage when caught early.</p>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
