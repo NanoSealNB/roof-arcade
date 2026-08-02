@@ -273,12 +273,14 @@ html, body {
 }
 
 .btn-primary {
-  background: var(--nano-orange);
-  color: var(--nano-white);
+  background: var(--nano-white);
+  color: var(--nano-black);
+  border: 2px solid var(--nano-orange);
 }
 
 .btn-primary:hover {
-  background: var(--nano-orange-dim);
+  background: var(--nano-orange);
+  color: var(--nano-white);
   box-shadow: 0 4px 12px rgba(245, 128, 37, 0.3);
 }
 
@@ -322,6 +324,61 @@ html, body {
   font-size: 0.85rem;
   color: var(--nano-text-dim);
   margin-top: 0.5rem;
+}
+
+/* ---- See Also Links ---- */
+.see-also {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--nano-grey);
+  text-align: center;
+}
+
+.see-also-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--nano-orange);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.see-also-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+}
+
+.see-also-links a {
+  font-size: 0.95rem;
+  color: var(--nano-text-dim);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+}
+
+.see-also-links a:hover,
+.see-also-links a:focus-visible {
+  color: var(--nano-orange);
+  outline: none;
+}
+
+.see-also-links a:focus-visible {
+  outline: 2px solid var(--nano-orange);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (min-width: 600px) {
+  .see-also-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.25rem;
+  }
 }
 
 /* ---- Reduced Motion ---- */
