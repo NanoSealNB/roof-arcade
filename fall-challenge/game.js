@@ -87,10 +87,14 @@
     if (typeof console !== 'undefined' && console.log) {
       console.log('[GameEvent]', eventName, data || {});
     }
-    // Future integration points:
-    // if (window.fbq) fbq('trackCustom', eventName, data);
-    // if (window.gtag) gtag('event', eventName, data);
-    // if (window._paq) _paq.push(['trackEvent', 'Game', eventName]);
+    // Meta Pixel
+    if (typeof window.fbq === 'function') {
+      window.fbq('trackCustom', eventName, data || {});
+    }
+    // Google Analytics 4
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', eventName, data || {});
+    }
   }
 
   /* ============================================================
