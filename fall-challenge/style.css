@@ -283,14 +283,39 @@ html, body {
 }
 
 .btn-accent {
-  background: var(--nano-white);
-  color: var(--nano-black);
+  background: var(--nano-orange);
+  color: var(--nano-white);
   border: 2px solid var(--nano-orange);
+  box-shadow:
+    0 0 12px rgba(245, 128, 37, 0.5),
+    0 0 24px rgba(245, 128, 37, 0.3),
+    inset 0 0 8px rgba(255, 200, 150, 0.2);
+  animation: cta-glow 2s ease-in-out infinite;
 }
 
 .btn-accent:hover {
-  background: var(--nano-orange);
+  background: var(--nano-orange-dim);
   color: var(--nano-white);
+  border-color: var(--nano-orange-dim);
+  box-shadow:
+    0 0 20px rgba(245, 128, 37, 0.7),
+    0 0 40px rgba(245, 128, 37, 0.4),
+    inset 0 0 12px rgba(255, 200, 150, 0.3);
+}
+
+@keyframes cta-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 12px rgba(245, 128, 37, 0.5),
+      0 0 24px rgba(245, 128, 37, 0.3),
+      inset 0 0 8px rgba(255, 200, 150, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(245, 128, 37, 0.7),
+      0 0 44px rgba(245, 128, 37, 0.45),
+      inset 0 0 12px rgba(255, 200, 150, 0.3);
+  }
 }
 
 .small-info {
@@ -309,6 +334,9 @@ html, body {
   }
   .btn {
     transition: none;
+  }
+  .btn-accent {
+    animation: none;
   }
 }
 
